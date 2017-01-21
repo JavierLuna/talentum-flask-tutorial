@@ -1,9 +1,10 @@
 from flask import flash, redirect, render_template, url_for
+from flask_login import login_required, current_user
 from sqlalchemy.exc import IntegrityError
 
 from app import db
-from .forms import PostCreationForm, TagCreationForm
 from . import main
+from .forms import PostCreationForm, TagCreationForm
 from ..models import Post, Tag
 
 
@@ -25,7 +26,9 @@ def tagged_posts(tag_slug):
 	                       blog_title="Tagged as " + tag.name, blog_subtitle="",
 	                       title="Tagged as " + tag.name)
 
+
 @main.route('/create/post', methods=['GET', 'POST'])
+@login_required
 def create_post():
 	post_form = PostCreationForm()
 	post_form.tags.choices = [(tag.name, tag.name) for tag in Tag.query.all()]
@@ -34,7 +37,7 @@ def create_post():
 	if post_form.validate_on_submit():
 		post = Post.query.filter_by(title=post_form.title.data).first()
 		if post is None:
-			p = Post(title=post_form.title.data, body=post_form.body.data) #User?
+			p = Post(title=post_form.title.data, body=post_form.body.data, user=current_user)
 			p.generate_slug()
 			for tag_name in post_form.tags.data:
 				tag = Tag.query.filter_by(name=tag_name).first()

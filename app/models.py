@@ -2,17 +2,21 @@ import datetime
 import hashlib
 
 from slugify import slugify
+from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from . import db
+from . import db, login_manager
 
 post_has_tags = db.Table('post_has_tags',
                          db.Column('post_id', db.Integer, db.ForeignKey('posts.id')),
                          db.Column('tag_id', db.Integer, db.ForeignKey('tags.id'))
                          )
 
+@login_manager.user_loader
+def load_user(user_id):
+	return User.query.get(int(user_id))
 
-class User(db.Model):
+class User(UserMixin, db.Model):
 	__tablename__ = 'users'
 
 	id = db.Column(db.Integer, primary_key=True)
