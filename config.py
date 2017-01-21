@@ -7,6 +7,7 @@ class Config:
 	SECRET_KEY = os.environ.get('SECRET_KEY') or 'hunter02'
 	SQLALCHEMY_COMMIT_ON_TEARDOWN = True
 	SQLALCHEMY_TRACK_MODIFICATIONS = True
+	POSTS_PER_PAGE = 4
 	@staticmethod
 	def init_app(app):
 		pass

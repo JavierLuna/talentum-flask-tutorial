@@ -1,0 +1,12 @@
+<ul class="pager">
+    <li class="previous">
+        {% if pagination.has_prev %}
+            <a href="{{ prevpage }}">← Newer</a>
+        {% endif %}
+    </li>
+    <li class="next">
+        {% if pagination.has_next %}
+            <a href="{{ nextpage }}">Older →</a>
+        {% endif %}
+    </li>
+</ul>

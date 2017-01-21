@@ -5,4 +5,5 @@
     {% for post in posts %}
         {{ macros.generate_post_summary(post) }}
     {% endfor %}
+    {% include "widgets/pagination.html" %}
 {% endblock %}
