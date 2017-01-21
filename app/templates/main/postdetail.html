@@ -1,44 +1,50 @@
 {% extends "base.html" %}
 {% import "_macros.html" as macros %}
 {% block main_content %}
-<div class="col-lg-8">
+    <div class="col-lg-8">
 
-    <!-- Blog Post -->
+        <!-- Blog Post -->
 
-    <!-- Title -->
-    <h1>{{ post.title }}</h1>
+        <!-- Title -->
+        <h1>{{ post.title }}</h1>
 
-    <!-- Author -->
-    <p class="lead">
-        by <a href="#">{{ post.user.username }}</a>
-    </p>
+        <!-- Author -->
+        <p class="lead">
+            by <a href="#">{{ post.user.username }}</a>
+        </p>
 
-    <hr>
+        <hr>
 
-    <!-- Date/Time -->
-    <p><span class="glyphicon glyphicon-time"></span> Posted on {{ post.created_on.strftime("%B %d, %Y at %-I:%M%p")}}
-    </p>
+        <!-- Date/Time -->
+        <p><span class="glyphicon glyphicon-time"></span> Posted
+            on {{ post.created_on.strftime("%B %d, %Y at %-I:%M%p") }}
+        </p>
 
-    <hr>
+        <hr>
 
-    {{ post.body | safe }}
+        {{ post.body | safe }}
 
-    <hr>
+        <hr>
 
-    <!-- Blog Comments -->
+        <!-- Blog Comments -->
 
-    <!-- Comments Form -->
-    <div class="well">
-        <h4>You need to be logged in to comment</h4>
+        <!-- Comments Form -->
+        <div class="well">
+            {% if current_user.is_authenticated %}
+                <h4>Leave a Comment:</h4>
+                {{ wtf.quick_form(form) }}
+            {% else %}
+                <h4>You need to be logged in to comment</h4>
+            {% endif %}
+        </div>
+
+        <hr>
+
+        <!-- Posted Comments -->
+
+        <!-- Comment -->
+        {% for comment in post.comments.all() %}
+            {{ macros.generate_comment(comment) }}
+        {% endfor %}
     </div>
-
-    <hr>
-
-    <!-- Posted Comments -->
-
-    <!-- Comment -->
-    {% for comment in post.comments.all() %}
-    {{ macros.generate_comment(comment) }}
-    {% endfor %}
-</div>
 {% endblock main_content %}

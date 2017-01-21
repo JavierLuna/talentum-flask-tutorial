@@ -39,13 +39,20 @@
                     <li>
                         <a href="{{ url_for('main.frontpage') }}">Home</a>
                     </li>
+                    {% if current_user.is_authenticated %}
                     <li>
                         <a href="{{ url_for('main.create_post') }}">Post something!</a>
                     </li>
+                    {% endif %}
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="{{ url_for('auth.login') }}">Login</a></li>
-                    <li><a href="{{ url_for('auth.register') }}">Register</a></li>
+                    {% if not current_user.is_authenticated %}
+                        <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+                        <li><a href="{{ url_for('auth.register') }}">Register</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('main.my_user') }}">{{ current_user.email }}</a></li>
+                        <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+                    {% endif %}
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
