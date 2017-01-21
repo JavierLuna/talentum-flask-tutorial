@@ -3,81 +3,91 @@
 {% block title %} Talentum's blog {% endblock title %}
 
 {% block styles %}
-{{ super() }}
-<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
-<style type="text/css">
-    body {
-        padding-top: 70px; /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
-    }
+    {{ super() }}
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    <style type="text/css">
+        body {
+            padding-top: 70px; /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+        }
 
-    footer {
-        margin: 50px 0;
-    }
-</style>
+        footer {
+            margin: 50px 0;
+        }
+    </style>
 
 {% endblock styles %}
 
 <!-- Navigation -->
 
 {% block navbar %}
-<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-    <div class="container">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse"
-                    data-target="#bs-example-navbar-collapse-1">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="{{ url_for('main.frontpage') }}">Talentum's blog</a>
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{{ url_for('main.frontpage') }}">Talentum's blog</a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="{{ url_for('main.frontpage') }}">Home</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('main.create_post') }}">Post something!</a>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#">Login</a></li>
+                    <li><a href="#">Register</a></li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
         </div>
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-                <li>
-                    <a href="{{ url_for('main.frontpage') }}">Home</a>
-                </li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="#">Login</a></li>
-                <li><a href="#">Register</a></li>
-            </ul>
-        </div>
-        <!-- /.navbar-collapse -->
-    </div>
-    <!-- /.container -->
-</nav>
+        <!-- /.container -->
+    </nav>
 {% endblock navbar %}
 <!-- Page Content -->
 {% block content %}
-<div class="container">
-    <h1>{% if blog_title is defined %} {{ blog_title }} {% else %} Talentum's blog {% endif %}</h1>
-    <!-- Author -->
-    <p class="lead">
-        {% if blog_subtitle is defined %} {{ blog_subtitle }} {% else %}written entirely in
-        <a href="#">Flask</a>{% endif %}
-    </p>
-    <hr>
-    <div class="row">
-        <!-- Blog Post Content Column -->
-        <div class="col-lg-8">
-            <!-- GENERAR LOS POSTS AQUI -->
-            {% block main_content %}{% endblock main_content %}
+    <div class="container">
+        <h1>{% if blog_title is defined %} {{ blog_title }} {% else %} Talentum's blog {% endif %}</h1>
+        <!-- Author -->
+        <p class="lead">
+            {% if blog_subtitle is defined %} {{ blog_subtitle }} {% else %}written entirely in
+                <a href="#">Flask</a>{% endif %}
+        </p>
+        <hr>
+        <div class="row">
+            <!-- Blog Post Content Column -->
+            <div class="col-lg-8">
+
+                {% for message in get_flashed_messages() %}
+                    <div class="alert alert-warning">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+                <!-- GENERAR LOS POSTS AQUI -->
+                {% block main_content %}{% endblock main_content %}
+            </div>
+            <!-- Blog Sidebar Widgets Column -->
+            <div class="col-md-4">
+                {% block widgets %}
+                    {% include "widgets/description.html" %}
+                    {% include "widgets/tags.html" %}
+                {% endblock widgets %}
+            </div>
         </div>
-        <!-- Blog Sidebar Widgets Column -->
-        <div class="col-md-4">
-            {% block widgets %}
-            {% include "widgets/description.html" %}
-            {% include "widgets/tags.html" %}
-            {% endblock widgets %}
-        </div>
+        <!-- /.row -->
+        <hr>
+        <!-- Footer -->
+        {% include "widgets/footer.html" %}
     </div>
-    <!-- /.row -->
-    <hr>
-    <!-- Footer -->
-    {% include "widgets/footer.html" %}
-</div>
 {% endblock content %}
 <!-- /.container -->
