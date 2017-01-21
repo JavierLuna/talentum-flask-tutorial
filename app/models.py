@@ -63,6 +63,8 @@ class User(UserMixin, db.Model):
 			except IntegrityError:
 				db.session.rollback()
 
+
+
 	def __repr__(self):
 		return "<User " + self.username + " >"
 
@@ -111,6 +113,17 @@ class Post(db.Model):
 			except IntegrityError:
 				db.session.rollback()
 
+	def to_json(self):
+		return {'id': self.id,
+		        'title': self.title,
+		        'body': self.body,
+		        'slug': self.slug,
+		        'created_on': str(self.created_on),
+		        'edited_on': str(self.edited_on),
+		        'user': self.user.username,
+		        'tags': [tag.to_json() for tag in self.tags.all()],
+		        'comments': [comment.to_json() for comment in self.comments.all()]}
+
 	def __repr__(self):
 		return "<Post " + self.title + " >"
 
@@ -144,6 +157,13 @@ class Comment(db.Model):
 				db.session.commit()
 			except IntegrityError:
 				db.session.rollback()
+
+	def to_json(self):
+		return {'id': self.id,
+		        'body': self.body,
+		        'posted_on': str(self.posted_on),
+		        'post_id': self.post_id,
+		        'user': self.user.username}
 
 	def __repr__(self):
 		return "<Comment " + self.body + " >"
@@ -179,6 +199,11 @@ class Tag(db.Model):
 				db.session.commit()
 			except IntegrityError:
 				db.session.rollback()
+
+	def to_json(self):
+		return {'id': self.id,
+		        'name': self.name,
+		        'slug': self.slug}
 
 	def __repr__(self):
 		return "<Tag " + self.name + ">"
