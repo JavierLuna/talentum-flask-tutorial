@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+{% block main_content %}
+<div class="col-lg-8">
+
+    <!-- Blog Post -->
+
+    <!-- Title -->
+    <h1>{{ post.title }}</h1>
+
+    <!-- Author -->
+    <p class="lead">
+        by <a href="#">{{ post.user.username }}</a>
+    </p>
+
+    <hr>
+
+    <!-- Date/Time -->
+    <p><span class="glyphicon glyphicon-time"></span> Posted on {{ post.created_on.strftime("%B %d, %Y at %-I:%M%p")}}
+    </p>
+
+    <hr>
+
+    {{ post.body | safe }}
+
+    <hr>
+
+    <!-- Blog Comments -->
+
+    <!-- Comments Form -->
+    <div class="well">
+        <h4>You need to be logged in to comment</h4>
+    </div>
+
+    <hr>
+
+    <!-- Posted Comments -->
+
+    <!-- Comment -->
+    {% for comment in post.comments.all() %}
+    {{ macros.generate_comment(comment) }}
+    {% endfor %}
+</div>
+{% endblock main_content %}

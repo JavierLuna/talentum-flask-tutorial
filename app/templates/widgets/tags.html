@@ -1,0 +1,19 @@
+<div class="well">
+    <h4>Tags</h4>
+    <div class="row">
+        {% if tags %}
+            <ul class="list-group">
+                {% for tag in tags %}
+                    <li class="list-group-item">
+                        <span class="badge">{{ tag.posts.count() }}</span>
+                        <a href="{{ url_for("main.tagged_posts", tag_slug=tag.slug) }}">{{ tag.name }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No tags yet :(</p>
+        {% endif %}
+
+    </div>
+    <!-- /.row -->
+</div>

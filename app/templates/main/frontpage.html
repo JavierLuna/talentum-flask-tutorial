@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+
+{% block main_content %}
+    {% for post in posts %}
+        {{ macros.generate_post_summary(post) }}
+    {% endfor %}
+{% endblock %}
