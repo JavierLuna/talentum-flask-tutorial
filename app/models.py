@@ -40,6 +40,25 @@ class User(db.Model):
 		self.photo = "https://www.gravatar.com/avatar/" + hashlib.md5(
 			self.email.lower().encode('utf-8')).hexdigest() + "?size=60"
 
+	@staticmethod
+	def generate_fake(count=100):
+		from sqlalchemy.exc import IntegrityError
+		from random import seed
+		import forgery_py
+
+		seed()
+		for _ in range(count):
+			u = User(username=forgery_py.internet.user_name(with_num=True),
+			         email=forgery_py.internet.email_address(),
+			         password=forgery_py.lorem_ipsum.word())
+			u.generate_gravatar()
+
+			db.session.add(u)
+			try:
+				db.session.commit()
+			except IntegrityError:
+				db.session.rollback()
+
 	def __repr__(self):
 		return "<User " + self.username + " >"
 
@@ -66,6 +85,28 @@ class Post(db.Model):
 	def generate_slug(self):
 		self.slug = slugify(self.title)
 
+	@staticmethod
+	def generate_fake(count=100):
+		from random import seed, randint
+		from sqlalchemy.exc import IntegrityError
+		import forgery_py
+
+		seed()
+		user_count = User.query.count()
+		for _ in range(count):
+			u = User.query.offset(randint(0, user_count - 1)).first()
+			p = Post(title=forgery_py.lorem_ipsum.words(3),
+			         body=forgery_py.lorem_ipsum.sentences(randint(1, 3)),
+			         user=u)
+
+			p.generate_slug()
+
+			db.session.add(p)
+			try:
+				db.session.commit()
+			except IntegrityError:
+				db.session.rollback()
+
 	def __repr__(self):
 		return "<Post " + self.title + " >"
 
@@ -81,6 +122,25 @@ class Comment(db.Model):
 	post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
 	user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
+	@staticmethod
+	def generate_fake(count=100):
+		from random import seed, randint
+		from sqlalchemy.exc import IntegrityError
+		import forgery_py
+
+		seed()
+		post_count = Post.query.count()
+		user_count = User.query.count()
+		for _ in range(count):
+			p = Post.query.offset(randint(0, post_count - 1)).first()
+			u = User.query.offset(randint(0, user_count - 1)).first()
+			c = Comment(body=forgery_py.lorem_ipsum.words(), user=u, post=p)
+			db.session.add(c)
+			try:
+				db.session.commit()
+			except IntegrityError:
+				db.session.rollback()
+
 	def __repr__(self):
 		return "<Comment " + self.body + " >"
 
@@ -94,6 +154,27 @@ class Tag(db.Model):
 
 	def generate_slug(self):
 		self.slug = slugify(self.name)
+
+	@staticmethod
+	def generate_fake(count=6):
+		from random import seed, randint
+		from sqlalchemy.exc import IntegrityError
+		import forgery_py
+
+		seed()
+		post_count = Post.query.count()
+		for _ in range(count):
+			p = Post.query.offset(randint(0, post_count - 1)).first()
+			t = Tag(name=forgery_py.lorem_ipsum.word())
+
+			t.generate_slug()
+			t.posts.append(p)
+
+			db.session.add(t)
+			try:
+				db.session.commit()
+			except IntegrityError:
+				db.session.rollback()
 
 	def __repr__(self):
 		return "<Tag " + self.name + ">"
